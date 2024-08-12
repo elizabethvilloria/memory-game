@@ -1,9 +1,23 @@
 import React from 'react';
 
-const Card = ({ card, onClick }) => {
+const Card = ({ card, handleChoice, flipped, disabled }) => {
+  const handleClick = () => {
+    if (!disabled) {
+      handleChoice(card);
+    }
+  };
+
   return (
-    <div className="card" onClick={onClick}>
-      {/* Card content will go here */}
+    <div className="card">
+      <div className={flipped ? "flipped" : ""}>
+        <img className="front" src={card.src} alt="card front" />
+        <img
+          className="back"
+          src="/img/back.png"
+          onClick={handleClick}
+          alt="card back"
+        />
+      </div>
     </div>
   );
 };
