@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Card = ({ card, handleChoice, flipped, disabled }) => {
+const Card = ({ card, handleChoice, flipped, disabled, cardBack }) => {
   const handleClick = () => {
     if (!disabled) {
       handleChoice(card);
@@ -10,12 +10,18 @@ const Card = ({ card, handleChoice, flipped, disabled }) => {
   return (
     <div className="card">
       <div className={flipped ? "flipped" : ""}>
-        <img className="front" src={card.src} alt="card front" />
+        <img
+          className="front"
+          src={card.src}
+          alt="card front"
+          style={{ display: flipped ? "block" : "none" }}
+        />
         <img
           className="back"
-          src="/img/back.png"
-          onClick={handleClick}
+          src={cardBack}
           alt="card back"
+          onClick={handleClick}
+          style={{ display: flipped ? "none" : "block" }}
         />
       </div>
     </div>

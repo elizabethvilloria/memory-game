@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import Card from './Card';
+import image1 from '../img/image1.png'
+import image2 from '../img/image2.png'
+import image3 from '../img/image3.png'
+import image4 from '../img/image4.png'
+import image5 from '../img/image5.png'
+import image6 from '../img/image6.png'
+import cardBack from '../img/cardBack.png';
+
 
 const cardImages = [
-  { src: '/img/image1.png', matched: false },
-  { src: '/img/image2.png', matched: false },
-  { src: '/img/image3.png', matched: false },
-  { src: '/img/image4.png', matched: false },
-  { src: '/img/image5.png', matched: false },
-  { src: '/img/image6.png', matched: false },
+  { src: image1, matched: false },
+  { src: image2, matched: false },
+  { src: image3, matched: false },
+  { src: image4, matched: false },
+  { src: image5, matched: false },
+  { src: image6, matched: false },
 ];
 
 const GameBoard = ({ setScore }) => {
@@ -82,19 +90,20 @@ const GameBoard = ({ setScore }) => {
   }, [cards]);
 
   return (
-    <div className="game-board">
-      <h2>Time: {timer} seconds</h2>
-      {cards.map((card) => (
-        <Card
-          key={card.id}
-          card={card}
-          handleChoice={handleChoice}
-          flipped={card === firstChoice || card === secondChoice || card.matched}
-          disabled={disabled}
-        />
-      ))}
-    </div>
-  );
+  <div className="game-board">
+    <h2>Time: {timer} seconds</h2>
+    {cards.map((card) => (
+      <Card
+        key={card.id}
+        card={card}
+        handleChoice={handleChoice}
+        flipped={card === firstChoice || card === secondChoice || card.matched}
+        disabled={disabled}
+        cardBack={cardBack}  // Pass the card back image as a prop
+      />
+    ))}
+  </div>
+);
 };
 
 export default GameBoard;
