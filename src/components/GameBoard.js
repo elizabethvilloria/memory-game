@@ -15,6 +15,8 @@ const GameBoard = ({ setScore }) => {
   const [firstChoice, setFirstChoice] = useState(null);
   const [secondChoice, setSecondChoice] = useState(null);
   const [disabled, setDisabled] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
 
   // Shuffle cards and duplicate them for pairs
   const shuffleCards = () => {
@@ -23,6 +25,8 @@ const GameBoard = ({ setScore }) => {
       .map((card) => ({ ...card, id: Math.random() }));
     setCards(shuffledCards);
     setScore(0);
+    setTimer(0);
+    setGameOver(false);
   };
 
   // Handle a card being clicked
@@ -60,8 +64,26 @@ const GameBoard = ({ setScore }) => {
     shuffleCards();
   }, []);
 
+  // Timer effect
+  useEffect(() => {
+    let timerId;
+    if (!gameOver) {
+      timerId = setInterval(() => setTimer((prev) => prev + 1), 1000);
+    } else {
+      clearInterval(timerId);
+    }
+    return () => clearInterval(timerId);
+  }, [gameOver]);
+
+  useEffect(() => {
+    if (cards.every((card) => card.matched)) {
+      setGameOver(true);
+    }
+  }, [cards]);
+
   return (
     <div className="game-board">
+      <h2>Time: {timer} seconds</h2>
       {cards.map((card) => (
         <Card
           key={card.id}

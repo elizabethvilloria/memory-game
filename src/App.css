@@ -40,3 +40,8 @@
   top: 0;
   left: 0;
 }
+
+.game-board h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
