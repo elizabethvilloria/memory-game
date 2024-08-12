@@ -82,6 +82,7 @@ const GameBoard = ({ setScore }) => {
     }
     return () => clearInterval(timerId);
   }, [gameOver]);
+  
 
   useEffect(() => {
     if (cards.every((card) => card.matched)) {
