@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Card from './Card';
-import image1 from '../img/image1.png'
-import image2 from '../img/image2.png'
-import image3 from '../img/image3.png'
-import image4 from '../img/image4.png'
-import image5 from '../img/image5.png'
-import image6 from '../img/image6.png'
+import image1 from '../img/image1.png';
+import image2 from '../img/image2.png';
+import image3 from '../img/image3.png';
+import image4 from '../img/image4.png';
+import image5 from '../img/image5.png';
+import image6 from '../img/image6.png';
 import cardBack from '../img/cardBack.png';
-
 
 const cardImages = [
   { src: image1, matched: false },
@@ -18,13 +17,12 @@ const cardImages = [
   { src: image6, matched: false },
 ];
 
-const GameBoard = ({ setScore }) => {
+const GameBoard = ({ setScore, onGameOver }) => {
   const [cards, setCards] = useState([]);
   const [firstChoice, setFirstChoice] = useState(null);
   const [secondChoice, setSecondChoice] = useState(null);
   const [disabled, setDisabled] = useState(false);
-  const [timer, setTimer] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
+  const [showAllCards, setShowAllCards] = useState(true);
 
   // Shuffle cards and duplicate them for pairs
   const shuffleCards = () => {
@@ -33,13 +31,19 @@ const GameBoard = ({ setScore }) => {
       .map((card) => ({ ...card, id: Math.random() }));
     setCards(shuffledCards);
     setScore(0);
-    setTimer(0);
-    setGameOver(false);
+    setDisabled(true); // Disable user interaction during the brief show
+    setShowAllCards(true); // Show all cards at the beginning
+    setTimeout(() => {
+      setShowAllCards(false); // Hide cards after 3 seconds
+      setDisabled(false); // Enable user interaction
+    }, 3000);
   };
 
   // Handle a card being clicked
   const handleChoice = (card) => {
-    firstChoice ? setSecondChoice(card) : setFirstChoice(card);
+    if (!disabled) {
+      firstChoice ? setSecondChoice(card) : setFirstChoice(card);
+    }
   };
 
   // Compare two selected cards
@@ -67,44 +71,32 @@ const GameBoard = ({ setScore }) => {
     setDisabled(false);
   };
 
+  // Check if the game is over
+  useEffect(() => {
+    if (cards.length > 0 && cards.every((card) => card.matched)) {
+      onGameOver();
+    }
+  }, [cards, onGameOver]);
+
   // Start a new game when the component mounts
   useEffect(() => {
     shuffleCards();
   }, []);
 
-  // Timer effect
-  useEffect(() => {
-    let timerId;
-    if (!gameOver) {
-      timerId = setInterval(() => setTimer((prev) => prev + 1), 1000);
-    } else {
-      clearInterval(timerId);
-    }
-    return () => clearInterval(timerId);
-  }, [gameOver]);
-  
-
-  useEffect(() => {
-    if (cards.every((card) => card.matched)) {
-      setGameOver(true);
-    }
-  }, [cards]);
-
   return (
-  <div className="game-board">
-    <h2>Time: {timer} seconds</h2>
-    {cards.map((card) => (
-      <Card
-        key={card.id}
-        card={card}
-        handleChoice={handleChoice}
-        flipped={card === firstChoice || card === secondChoice || card.matched}
-        disabled={disabled}
-        cardBack={cardBack}  // Pass the card back image as a prop
-      />
-    ))}
-  </div>
-);
+    <div className="game-board">
+      {cards.map((card) => (
+        <Card
+          key={card.id}
+          card={card}
+          handleChoice={handleChoice}
+          flipped={showAllCards || card === firstChoice || card === secondChoice || card.matched}
+          disabled={disabled}
+          cardBack={cardBack}  // Pass the card back image as a prop
+        />
+      ))}
+    </div>
+  );
 };
 
 export default GameBoard;
